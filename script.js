@@ -12,32 +12,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const progress = document.getElementById('preloader-progress');
     let width = 0;
 
-    document.body.style.overflow = 'hidden';
+    if (preloader && progress) {
+        document.body.style.overflow = 'hidden';
 
-    const interval = setInterval(() => {
-        if (width >= 100) {
-            clearInterval(interval);
+        const interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
 
-            setTimeout(() => {
-                preloader.style.opacity = '0';
-                preloader.style.visibility = 'hidden';
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    preloader.style.visibility = 'hidden';
 
-                document.body.style.overflow = '';
+                    document.body.style.overflow = '';
 
-                triggerEntryAnimations();
+                    triggerEntryAnimations();
 
-            }, 400);
+                }, 400);
 
-        } else {
+            } else {
 
-            width += Math.floor(Math.random() * 15) + 5;
+                width += Math.floor(Math.random() * 15) + 5;
 
-            if (width > 100) width = 100;
+                if (width > 100) width = 100;
 
-            progress.style.width = width + '%';
-        }
+                progress.style.width = width + '%';
+            }
 
-    }, 100);
+        }, 100);
+    } else {
+        triggerEntryAnimations();
+    }
 
     /* ==========================================================================
        2. ENTRY ANIMATIONS
@@ -92,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animateOutline);
 
         const hoverTargets = document.querySelectorAll(
-            'a, button, .btn, .skill-card, .project-card, .contact-card-mini, .form-input, #menu-toggle'
+            'a, button, .btn, .skill-card, .project-card, .cert-card, .about-stat-item, .timeline-content, .social-link-card, .form-input, #menu-toggle'
         );
 
         hoverTargets.forEach(target => {
@@ -205,7 +209,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       7. WEB3FORMS CONTACT FORM
+       7. INTERSECTION OBSERVER FOR SECTIONS (SCROLL REVEAL)
+       ========================================================================== */
+    const revealElements = document.querySelectorAll(
+        '.about-stat-item, .cert-card, .timeline-item, .project-card, .about-image-card'
+    );
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Stagger the animation
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 80);
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        revealObserver.observe(el);
+    });
+
+    /* ==========================================================================
+       8. WEB3FORMS CONTACT FORM
        — No SDK needed, no OAuth, messages go straight to your Gmail inbox.
        — Replace YOUR_ACCESS_KEY_HERE with your key from web3forms.com/access
        ========================================================================== */

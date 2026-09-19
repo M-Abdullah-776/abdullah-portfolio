@@ -3,18 +3,730 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Resume - Muhammad Abdullah">
+    <meta name="description" content="Resume - Muhammad Abdullah | Software Engineer">
     <title>Resume | Muhammad Abdullah</title>
 
-    <!-- Reuse site fonts, icons and stylesheet for consistent look -->
+    <!-- Google Fonts & Lucide Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Outfit:wght@200;300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html2pdf.js for 1-click direct client-side PDF download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="Style.css">
+
+    <style>
+        /* Resume Page Specific Styling */
+        .resume-hero {
+            padding: 130px 0 40px;
+            background: var(--color-bg-darker);
+            border-bottom: 1px solid rgba(223, 186, 115, 0.1);
+        }
+
+        .resume-hero-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .resume-hero-text h1 {
+            font-family: var(--font-luxury);
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .resume-hero-text .resume-tagline {
+            font-family: var(--font-luxury);
+            font-size: 1.05rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .resume-actions {
+            display: flex;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .resume-content-section {
+            padding: 50px 0 90px;
+            background: var(--color-bg-dark);
+        }
+
+        /* Printable / Display Resume Document */
+        .resume-card {
+            border-radius: 20px;
+            padding: 3.5rem;
+            border: var(--border-gold);
+            background: var(--glass-background);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        /* Resume Document Header */
+        .resume-doc-header {
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(223, 186, 115, 0.25);
+            margin-bottom: 2.2rem;
+        }
+
+        .resume-doc-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .resume-doc-name {
+            font-family: var(--font-luxury);
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .resume-doc-role {
+            font-size: 1.1rem;
+            color: var(--color-gold);
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .resume-contact-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1.25rem;
+            margin-top: 1rem;
+            font-size: 0.88rem;
+            color: var(--color-text-secondary);
+        }
+
+        .resume-contact-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .resume-contact-item:hover {
+            color: var(--color-gold-light);
+        }
+
+        .resume-contact-item i, .resume-contact-item svg {
+            color: var(--color-gold);
+            font-size: 0.95rem;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Sections */
+        .resume-section {
+            margin-bottom: 2.2rem;
+            padding-bottom: 2.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .resume-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .resume-section-title {
+            font-family: var(--font-luxury);
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .resume-section-title .section-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: rgba(223, 186, 115, 0.1);
+            color: var(--color-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .resume-section-title .section-icon svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .resume-profile-text {
+            color: var(--color-text-secondary);
+            font-size: 0.96rem;
+            line-height: 1.75;
+        }
+
+        /* Entries */
+        .resume-entry {
+            margin-bottom: 1.5rem;
+        }
+
+        .resume-entry:last-child {
+            margin-bottom: 0;
+        }
+
+        .resume-entry-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .resume-entry-title {
+            font-family: var(--font-luxury);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .resume-entry-org {
+            font-size: 0.92rem;
+            color: var(--color-gold);
+            margin-top: 0.15rem;
+        }
+
+        .resume-entry-date {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+            padding: 0.25rem 0.7rem;
+            border: 1px solid rgba(223, 186, 115, 0.2);
+            border-radius: 20px;
+            background: rgba(223, 186, 115, 0.04);
+        }
+
+        .resume-entry-desc {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.65;
+            margin-top: 0.4rem;
+        }
+
+        .resume-entry-desc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .resume-entry-desc li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .resume-entry-desc li::before {
+            content: '▪';
+            color: var(--color-gold);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        /* Skills Grid */
+        .resume-skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.9rem;
+        }
+
+        .resume-skill-tag {
+            padding: 0.85rem 1.1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            transition: var(--transition-smooth);
+        }
+
+        .resume-skill-tag:hover {
+            border-color: rgba(223, 186, 115, 0.3);
+            background: rgba(223, 186, 115, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .resume-skill-tag strong {
+            display: block;
+            font-family: var(--font-luxury);
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--color-gold);
+            letter-spacing: 0.05em;
+        }
+
+        .resume-skill-tag span {
+            font-size: 0.82rem;
+            color: var(--color-text-secondary);
+            line-height: 1.4;
+            display: block;
+        }
+
+        /* Certifications List */
+        .resume-cert-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.85rem;
+        }
+
+        .resume-cert-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .resume-cert-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+            background: rgba(223, 186, 115, 0.08);
+            color: var(--color-gold);
+        }
+
+        .resume-cert-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .resume-cert-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .resume-cert-issuer {
+            font-size: 0.74rem;
+            color: var(--color-text-muted);
+            margin-top: 0.15rem;
+        }
+
+        /* Actions at the bottom */
+        .resume-bottom-actions {
+            margin-top: 2.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Notification Toast for PDF Generation */
+        #resume-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #181818;
+            border: 1px solid var(--color-gold);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        #resume-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ==========================================================================
+           PRINT & EXPORT STYLES (Clean, high-contrast, professional A4 PDF/Print)
+           ========================================================================== */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 12mm 15mm;
+            }
+
+            *, *:before, *:after {
+                background: transparent !important;
+                color: #111827 !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
+            }
+
+            body {
+                background: #ffffff !important;
+                color: #111827 !important;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+                font-size: 9.5pt !important;
+                line-height: 1.45 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .header, .footer, .resume-hero, .resume-bottom-actions, .no-print, #resume-toast {
+                display: none !important;
+            }
+
+            .resume-content-section {
+                padding: 0 !important;
+                background: #ffffff !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .resume-card {
+                border: none !important;
+                background: #ffffff !important;
+                padding: 0 !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: none !important;
+                max-width: 100% !important;
+            }
+
+            .resume-doc-header {
+                border-bottom: 2px solid #8B6914 !important;
+                padding-bottom: 12px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .resume-doc-name {
+                color: #111827 !important;
+                font-size: 20pt !important;
+                font-weight: 800 !important;
+            }
+
+            .resume-doc-role {
+                color: #8B6914 !important;
+                font-size: 11pt !important;
+                font-weight: 600 !important;
+            }
+
+            .resume-contact-badges {
+                margin-top: 8px !important;
+                gap: 6px 14px !important;
+                font-size: 8.5pt !important;
+            }
+
+            .resume-contact-item {
+                color: #374151 !important;
+            }
+
+            .resume-contact-item i, .resume-contact-item svg {
+                color: #8B6914 !important;
+            }
+
+            .resume-section {
+                margin-bottom: 14px !important;
+                padding-bottom: 14px !important;
+                border-bottom: 1px solid #E5E7EB !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .resume-section-title {
+                color: #8B6914 !important;
+                font-size: 11pt !important;
+                font-weight: 700 !important;
+                margin-bottom: 8px !important;
+                letter-spacing: 0.05em !important;
+            }
+
+            .resume-section-title .section-icon {
+                display: none !important;
+            }
+
+            .resume-profile-text {
+                color: #374151 !important;
+                font-size: 9.5pt !important;
+                line-height: 1.5 !important;
+            }
+
+            .resume-entry {
+                margin-bottom: 10px !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .resume-entry-title {
+                color: #111827 !important;
+                font-size: 10.5pt !important;
+                font-weight: 700 !important;
+            }
+
+            .resume-entry-org {
+                color: #8B6914 !important;
+                font-size: 9.5pt !important;
+                font-weight: 600 !important;
+            }
+
+            .resume-entry-date {
+                color: #4B5563 !important;
+                background: #F3F4F6 !important;
+                border: 1px solid #D1D5DB !important;
+                font-size: 7.5pt !important;
+                padding: 2px 6px !important;
+            }
+
+            .resume-entry-desc {
+                color: #374151 !important;
+                font-size: 9pt !important;
+                line-height: 1.4 !important;
+            }
+
+            .resume-entry-desc li::before {
+                color: #8B6914 !important;
+            }
+
+            .resume-skills-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px !important;
+            }
+
+            .resume-skill-tag {
+                border: 1px solid #E5E7EB !important;
+                background: #F9FAFB !important;
+                padding: 6px 8px !important;
+            }
+
+            .resume-skill-tag strong {
+                color: #8B6914 !important;
+                font-size: 8.5pt !important;
+            }
+
+            .resume-skill-tag span {
+                color: #374151 !important;
+                font-size: 8pt !important;
+            }
+
+            .resume-cert-list {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+
+            .resume-cert-item {
+                border: 1px solid #E5E7EB !important;
+                background: #F9FAFB !important;
+                padding: 6px 8px !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .resume-cert-icon {
+                display: none !important;
+            }
+
+            .resume-cert-name {
+                color: #111827 !important;
+                font-size: 8.5pt !important;
+                font-weight: 600 !important;
+            }
+
+            .resume-cert-issuer {
+                color: #6B7280 !important;
+                font-size: 7.5pt !important;
+            }
+        }
+
+        /* PDF Export Mode Class */
+        .pdf-exporting {
+            background: #ffffff !important;
+            color: #111827 !important;
+            padding: 25px !important;
+            border-radius: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            width: 800px !important;
+            max-width: 800px !important;
+        }
+
+        .pdf-exporting * {
+            color: #111827 !important;
+            text-shadow: none !important;
+        }
+
+        .pdf-exporting .resume-doc-header {
+            border-bottom: 2px solid #8B6914 !important;
+        }
+
+        .pdf-exporting .resume-doc-name {
+            color: #111827 !important;
+            font-size: 24px !important;
+        }
+
+        .pdf-exporting .resume-doc-role {
+            color: #8B6914 !important;
+            font-size: 14px !important;
+        }
+
+        .pdf-exporting .resume-contact-item {
+            color: #374151 !important;
+        }
+
+        .pdf-exporting .resume-contact-item i,
+        .pdf-exporting .resume-contact-item svg {
+            color: #8B6914 !important;
+        }
+
+        .pdf-exporting .resume-section {
+            border-bottom: 1px solid #E5E7EB !important;
+            margin-bottom: 16px !important;
+            padding-bottom: 16px !important;
+        }
+
+        .pdf-exporting .resume-section-title {
+            color: #8B6914 !important;
+            font-size: 15px !important;
+        }
+
+        .pdf-exporting .resume-section-title .section-icon {
+            display: none !important;
+        }
+
+        .pdf-exporting .resume-profile-text {
+            color: #374151 !important;
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+        }
+
+        .pdf-exporting .resume-entry-title {
+            color: #111827 !important;
+            font-size: 13px !important;
+        }
+
+        .pdf-exporting .resume-entry-org {
+            color: #8B6914 !important;
+            font-size: 12px !important;
+        }
+
+        .pdf-exporting .resume-entry-date {
+            background: #F3F4F6 !important;
+            border: 1px solid #D1D5DB !important;
+            color: #4B5563 !important;
+            font-size: 10px !important;
+        }
+
+        .pdf-exporting .resume-entry-desc {
+            color: #374151 !important;
+            font-size: 11.5px !important;
+        }
+
+        .pdf-exporting .resume-entry-desc li::before {
+            color: #8B6914 !important;
+        }
+
+        .pdf-exporting .resume-skill-tag {
+            background: #F9FAFB !important;
+            border: 1px solid #E5E7EB !important;
+            padding: 8px !important;
+        }
+
+        .pdf-exporting .resume-skill-tag strong {
+            color: #8B6914 !important;
+            font-size: 11px !important;
+        }
+
+        .pdf-exporting .resume-skill-tag span {
+            color: #374151 !important;
+            font-size: 10.5px !important;
+        }
+
+        .pdf-exporting .resume-cert-item {
+            background: #F9FAFB !important;
+            border: 1px solid #E5E7EB !important;
+            padding: 8px !important;
+        }
+
+        .pdf-exporting .resume-cert-icon {
+            display: none !important;
+        }
+
+        .pdf-exporting .resume-cert-name {
+            color: #111827 !important;
+            font-size: 11.5px !important;
+        }
+
+        .pdf-exporting .resume-cert-issuer {
+            color: #6B7280 !important;
+            font-size: 10px !important;
+        }
+
+        @media (max-width: 768px) {
+            .resume-hero-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .resume-actions {
+                justify-content: center;
+            }
+            .resume-card {
+                padding: 1.75rem;
+            }
+            .resume-skills-grid {
+                grid-template-columns: 1fr;
+            }
+            .resume-cert-list {
+                grid-template-columns: 1fr;
+            }
+            .resume-entry-header {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            .resume-doc-title-row {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+            }
+            .resume-contact-badges {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header (same as homepage for consistent navigation) -->
+    <!-- Navigation Header -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="logo">
@@ -22,9 +734,10 @@
             </a>
             <nav class="nav-menu" id="nav-menu">
                 <a href="index.html#hero" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
                 <a href="index.html#skills" class="nav-link">Skills</a>
                 <a href="index.html#projects" class="nav-link">Projects</a>
-                <a href="index.html#connect" class="nav-link">Connect</a>
+                <a href="index.html#certifications" class="nav-link">Certifications</a>
                 <a href="index.html#contact" class="nav-link">Contact</a>
             </nav>
             <div class="nav-cta">
@@ -32,90 +745,298 @@
                     <span>Let's Talk</span>
                 </a>
             </div>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
+                <span class="menu-bar"></span>
+                <span class="menu-bar"></span>
+                <span class="menu-bar"></span>
+            </button>
         </div>
     </header>
 
-    <!-- Resume Hero -->
-    <section class="hero-section" style="padding: 3.5rem 0;">
-        <div class="container hero-container">
-            <div class="hero-left fade-in-up">
-                <span class="hero-subtitle gold-gradient-text">Professional Resume</span>
-                <h1 class="hero-title"><span class="line-1">MUHAMMAD</span> <span class="line-2 gold-gradient-text">ABDULLAH</span></h1>
-                <p class="hero-tagline">Software Engineer — C++, Python, Databases, Web</p>
-                <p class="hero-desc">Below is a concise, professional presentation of experience, skills, and education. Use the buttons to download or view the full resume document.</p>
-
-                <div class="hero-buttons" style="margin-top:1.25rem;">
-                    <a href="Resume.docx" download class="btn btn-primary btn-hover-effect">
-                        <span>Download Resume</span>
-                    </a>
-                    <a href="#view-resume" class="btn btn-secondary btn-hover-effect">
-                        <span>View Resume</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- View Resume (HTML) -->
-    <section id="view-resume" class="projects-section" style="padding-bottom:3rem;">
+    <!-- Resume Hero Header (Top Action Bar) -->
+    <section class="resume-hero">
         <div class="container">
-            <div class="section-header text-left">
-                <span class="section-subtitle gold-gradient-text">Career Summary</span>
-                <h2 class="section-title">Resume — Muhammad Abdullah</h2>
-                <div class="title-divider"></div>
-            </div>
-
-            <div class="resume-grid" style="display:grid;grid-template-columns:1fr;gap:1.5rem;">
-                <div class="glass-panel" style="padding:1.25rem;">
-                    <h3 class="gold-gradient-text">Profile</h3>
-                    <p>Software Engineer with strong foundations in C++ and Python. Experienced in building performant systems, Computer Network, and database design.</p>
-
-                    <h3 class="gold-gradient-text">Education</h3>
-                    <ul class="resume-list">
-                        <li>
-                            <strong>Software Engineer</strong> 
-                            <p>Bachelor of Science — Software Engineering | University of Engineering & Technology (UET), Lahore – Present | Lahore, Pakistan
-▸                           	Currently enrolled in 3rd semester; relevant coursework in Data Structures, OOP, Computer Networks, and Discrete Mathematics, database
-▸	                             Actively developing projects and building skills alongside academic studies
-                                  </p>
-                        </li>
-                        <li>
-                            <strong>Certificate</strong> (GOOGLE / COURSERA)
-                            <p>2 professional certificates completed on Google Career Certificates via Coursera. Full details on the LinkedIn profile.
-                             <i> Programming for Everybody (Getting Started with Python) — Google / Coursera	2025</i>
-                            <li> Google AI Essentials — Google / Coursera</li>
-                            </p>
-                        
-                     </li>
-                    </ul>
-
-                    <h3 class="gold-gradient-text">Education</h3>
-                    <p><strong>B.S. in Computer Science</strong> — University Name</p>
-
-                    <h3 class="gold-gradient-text">Skills</h3>
-                    <p>C++, Python, SQL,Computer Network, Algorithms, System Design, HTML/CSS/JS</p>
-
-                    <h3 class="gold-gradient-text">Projects</h3>
-                    <ul class="resume-list">
-                        <li><strong>Python Chat Application</strong> — Real-time monitoring and analytics.</li>
-                        <li><strong>Console-Based C++ Project</strong> — Performance-oriented booking engine in C++.</li>
-                    </ul>
+            <div class="resume-hero-inner">
+                <div class="resume-hero-text">
+                    <span class="section-subtitle gold-gradient-text">Curriculum Vitae</span>
+                    <h1><span>MUHAMMAD </span><span class="gold-gradient-text">ABDULLAH</span></h1>
+                    <p class="resume-tagline">Software Engineer &bull; C++, Python, JavaScript, Web & AI</p>
+                </div>
+                <div class="resume-actions no-print">
+                    <button id="download-pdf-btn" onclick="downloadResumePDF()" class="btn btn-primary btn-hover-effect" title="Download PDF directly to your computer">
+                        <i data-lucide="download"></i>
+                        <span id="download-btn-label">Download PDF</span>
+                    </button>
+                    <button onclick="window.print()" class="btn btn-secondary btn-hover-effect" title="Open print preview / Save as PDF">
+                        <i data-lucide="printer"></i>
+                        <span>Print Resume</span>
+                    </button>
+                    <a href="index.html" class="btn btn-secondary btn-hover-effect" title="Back to Portfolio">
+                        <i data-lucide="arrow-left"></i>
+                        <span>Portfolio</span>
+                    </a>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div style="margin-top:1.25rem;">
-                <a href="Resume.docx" download class="btn btn-primary btn-hover-effect">
-                    <i class="fa-solid fa-download" style="margin-right:.5rem;"></i>
-                    <span>Download Resume</span>
-                </a>
-                <a href="index.html#contact" class="btn btn-secondary btn-hover-effect" style="margin-left:1rem;">
-                    <span>Contact</span>
+    <!-- Resume Printable / Exportable Document Content -->
+    <section class="resume-content-section">
+        <div class="container">
+            <div class="resume-card" id="resume-document">
+
+                <!-- Resume Header Details -->
+                <div class="resume-doc-header">
+                    <div class="resume-doc-title-row">
+                        <div>
+                            <div class="resume-doc-name gold-gradient-text">MUHAMMAD ABDULLAH</div>
+                            <div class="resume-doc-role">Software Engineer &bull; Full-Stack Web & AI Developer</div>
+                        </div>
+                    </div>
+                    <div class="resume-contact-badges">
+                        <a href="mailto:abdullahasadullah776@gmail.com" class="resume-contact-item">
+                            <i data-lucide="mail"></i>
+                            <span>abdullahasadullah776@gmail.com</span>
+                        </a>
+                        <a href="tel:+923476978772" class="resume-contact-item">
+                            <i data-lucide="phone"></i>
+                            <span>+92 347 6978772</span>
+                        </a>
+                        <span class="resume-contact-item">
+                            <i data-lucide="map-pin"></i>
+                            <span>Lahore, Pakistan</span>
+                        </span>
+                        <a href="https://github.com/M-Abdullah-776" target="_blank" class="resume-contact-item">
+                            <i data-lucide="github"></i>
+                            <span>github.com/M-Abdullah-776</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/m-abdullah-a239643bb" target="_blank" class="resume-contact-item">
+                            <i data-lucide="linkedin"></i>
+                            <span>linkedin.com/in/m-abdullah-a239643bb</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Professional Summary -->
+                <div class="resume-section">
+                    <h2 class="resume-section-title gold-gradient-text">
+                        <div class="section-icon"><i data-lucide="user"></i></div>
+                        Executive Summary
+                    </h2>
+                    <p class="resume-profile-text">
+                        Results-driven Software Engineering student at University of Engineering and Technology (UET) Lahore 
+                        with robust foundations in Data Structures, Object-Oriented Programming (OOP) in C++, Python backend development, 
+                        and modern full-stack web applications. Proven track record in building performant systems, real-time socket-based 
+                        chat networks, and modern e-commerce web applications. Certified by Google in Generative AI & Prompting, 
+                        with active internship experience in agile frontend development workflows at Zidio Development.
+                    </p>
+                </div>
+
+                <!-- Education -->
+                <div class="resume-section">
+                    <h2 class="resume-section-title gold-gradient-text">
+                        <div class="section-icon"><i data-lucide="graduation-cap"></i></div>
+                        Education
+                    </h2>
+                    <div class="resume-entry">
+                        <div class="resume-entry-header">
+                            <div>
+                                <div class="resume-entry-title">Bachelor of Science in Software Engineering (BS SE)</div>
+                                <div class="resume-entry-org">University of Engineering & Technology (UET), Lahore</div>
+                            </div>
+                            <span class="resume-entry-date">2025 — Present</span>
+                        </div>
+                        <div class="resume-entry-desc">
+                            <ul>
+                                <li>Currently enrolled in 3rd Semester with coursework in Data Structures & Algorithms, Object-Oriented Programming, Computer Networks, Discrete Mathematics, and Database Systems.</li>
+                                <li>Consistently applying rigorous software engineering principles to academic and open-source project initiatives.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="resume-section">
+                    <h2 class="resume-section-title gold-gradient-text">
+                        <div class="section-icon"><i data-lucide="briefcase"></i></div>
+                        Work Experience
+                    </h2>
+                    <div class="resume-entry">
+                        <div class="resume-entry-header">
+                            <div>
+                                <div class="resume-entry-title">Web Development Intern</div>
+                                <div class="resume-entry-org">Zidio Development &bull; Remote</div>
+                            </div>
+                            <span class="resume-entry-date">2025</span>
+                        </div>
+                        <div class="resume-entry-desc">
+                            <ul>
+                                <li>Engineered modern, high-performance, and responsive user interfaces using HTML5, CSS3, and JavaScript.</li>
+                                <li>Collaborated in agile software delivery pipelines, optimizing cross-browser compatibility and web accessibility.</li>
+                                <li>Integrated dynamic components, API data binding, and state management in production web environments.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Projects -->
+                <div class="resume-section">
+                    <h2 class="resume-section-title gold-gradient-text">
+                        <div class="section-icon"><i data-lucide="folder-open"></i></div>
+                        Key Projects
+                    </h2>
+                    <div class="resume-entry">
+                        <div class="resume-entry-header">
+                            <div class="resume-entry-title">Libas Mehar — Luxury E-Commerce Platform</div>
+                            <span class="resume-entry-date">React &bull; Vite &bull; JavaScript</span>
+                        </div>
+                        <div class="resume-entry-desc">
+                            <ul>
+                                <li>Architected and developed a full-featured clothing e-commerce web platform with modern product cataloging, responsive filtering, and seamless navigation.</li>
+                                <li>Deployed live to production on Vercel (<a href="https://libas-mehar.vercel.app/" target="_blank" style="color:var(--color-gold);text-decoration:underline;">libas-mehar.vercel.app</a>) with fast load times and optimized assets.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="resume-entry">
+                        <div class="resume-entry-header">
+                            <div class="resume-entry-title">Real-Time Chat Application via Socket Programming</div>
+                            <span class="resume-entry-date">Python &bull; Sockets &bull; Multithreading</span>
+                        </div>
+                        <div class="resume-entry-desc">
+                            <ul>
+                                <li>Engineered a concurrent client-server real-time messaging application leveraging Python raw socket APIs and multithreading.</li>
+                                <li>Implemented robust packet synchronization, client connection state tracking, and resilient broadcast messaging.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="resume-entry">
+                        <div class="resume-entry-header">
+                            <div class="resume-entry-title">Smart Campus Management System</div>
+                            <span class="resume-entry-date">C++ &bull; Data Structures & Algorithms</span>
+                        </div>
+                        <div class="resume-entry-desc">
+                            <ul>
+                                <li>Designed an all-in-one university campus management system utilizing custom linked structures, hash maps, and binary search algorithms for sub-millisecond retrieval.</li>
+                                <li>Automated student registration, timetable routing, course enrollment, and administrative reporting.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="resume-entry">
+                        <div class="resume-entry-header">
+                            <div class="resume-entry-title">Hospital Management System</div>
+                            <span class="resume-entry-date">C++ &bull; Object-Oriented Design</span>
+                        </div>
+                        <div class="resume-entry-desc">
+                            <ul>
+                                <li>Built a comprehensive hospital management system implementing encapsulation, polymorphism, inheritance, and persistent file I/O storage.</li>
+                                <li>Automated patient triage records, doctor scheduling schedules, appointment logs, and invoice billing.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Skills -->
+                <div class="resume-section">
+                    <h2 class="resume-section-title gold-gradient-text">
+                        <div class="section-icon"><i data-lucide="wrench"></i></div>
+                        Technical Skills
+                    </h2>
+                    <div class="resume-skills-grid">
+                        <div class="resume-skill-tag">
+                            <strong>Programming Languages</strong>
+                            <span>C++, Python, JavaScript (ES6+), SQL, C</span>
+                        </div>
+                        <div class="resume-skill-tag">
+                            <strong>Web & Frontend</strong>
+                            <span>HTML5, CSS3, React.js, Vite, Responsive Design</span>
+                        </div>
+                        <div class="resume-skill-tag">
+                            <strong>Core Computer Science</strong>
+                            <span>Data Structures & Algorithms, OOP, OS, Networks</span>
+                        </div>
+                        <div class="resume-skill-tag">
+                            <strong>Databases</strong>
+                            <span>MySQL, PostgreSQL, MongoDB, SQLite</span>
+                        </div>
+                        <div class="resume-skill-tag">
+                            <strong>AI & Tools</strong>
+                            <span>Generative AI, Prompt Engineering, Git & GitHub, VS Code</span>
+                        </div>
+                        <div class="resume-skill-tag">
+                            <strong>Methodologies</strong>
+                            <span>Agile, System Architecture, Code Optimization, Debugging</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="resume-section">
+                    <h2 class="resume-section-title gold-gradient-text">
+                        <div class="section-icon"><i data-lucide="award"></i></div>
+                        Certifications & Credentials
+                    </h2>
+                    <div class="resume-cert-list">
+                        <div class="resume-cert-item">
+                            <div class="resume-cert-icon"><i class="fa-brands fa-google"></i></div>
+                            <div class="resume-cert-info">
+                                <div class="resume-cert-name">Google AI Essentials</div>
+                                <div class="resume-cert-issuer">Google via Coursera &bull; August 2025</div>
+                            </div>
+                        </div>
+                        <div class="resume-cert-item">
+                            <div class="resume-cert-icon"><i class="fa-brands fa-google"></i></div>
+                            <div class="resume-cert-info">
+                                <div class="resume-cert-name">Discover the Art of Prompting</div>
+                                <div class="resume-cert-issuer">Google via Coursera &bull; August 2025</div>
+                            </div>
+                        </div>
+                        <div class="resume-cert-item">
+                            <div class="resume-cert-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div class="resume-cert-info">
+                                <div class="resume-cert-name">Programming for Everybody (Python)</div>
+                                <div class="resume-cert-issuer">University of Michigan via Coursera &bull; August 2025</div>
+                            </div>
+                        </div>
+                        <div class="resume-cert-item">
+                            <div class="resume-cert-icon"><i class="fa-brands fa-google"></i></div>
+                            <div class="resume-cert-info">
+                                <div class="resume-cert-name">Use AI Responsibly</div>
+                                <div class="resume-cert-issuer">Google via Coursera &bull; August 2025</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Action Buttons -->
+            <div class="resume-bottom-actions no-print">
+                <button onclick="downloadResumePDF()" class="btn btn-primary btn-hover-effect">
+                    <i data-lucide="download"></i>
+                    <span>Download PDF</span>
+                </button>
+                <button onclick="window.print()" class="btn btn-secondary btn-hover-effect">
+                    <i data-lucide="printer"></i>
+                    <span>Print / Save as PDF</span>
+                </button>
+                <a href="index.html" class="btn btn-secondary btn-hover-effect">
+                    <i data-lucide="arrow-left"></i>
+                    <span>Back to Portfolio</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer (reuse) -->
+    <!-- Toast Notification -->
+    <div id="resume-toast">
+        <i data-lucide="check-circle" style="color:var(--color-gold);"></i>
+        <span id="toast-message">Generating your PDF...</span>
+    </div>
+
+    <!-- Footer -->
     <footer class="footer">
         <div class="container footer-container">
             <p class="copyright">&copy; 2026 Muhammad Abdullah. All Rights Reserved.</p>
@@ -127,5 +1048,87 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        function showToast(msg, duration = 3500) {
+            const toast = document.getElementById('resume-toast');
+            const toastMsg = document.getElementById('toast-message');
+            if (!toast) return;
+            toastMsg.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        async function downloadResumePDF() {
+            const btn = document.getElementById('download-pdf-btn');
+            const label = document.getElementById('download-btn-label');
+            const resumeDoc = document.getElementById('resume-document');
+
+            if (!resumeDoc) {
+                window.print();
+                return;
+            }
+
+            // Check if html2pdf is available
+            if (typeof html2pdf === 'undefined') {
+                showToast('Opening print dialog to save PDF...');
+                window.print();
+                return;
+            }
+
+            try {
+                if (btn) btn.disabled = true;
+                if (label) label.textContent = 'Generating PDF...';
+                showToast('Generating high-quality PDF...');
+
+                // Clone the resume card for clean PDF rendering
+                const clone = resumeDoc.cloneNode(true);
+                clone.classList.add('pdf-exporting');
+
+                // Place clone in an off-screen container
+                const container = document.createElement('div');
+                container.style.position = 'fixed';
+                container.style.left = '-9999px';
+                container.style.top = '0';
+                container.style.width = '800px';
+                container.style.background = '#ffffff';
+                container.style.zIndex = '-1000';
+                container.appendChild(clone);
+                document.body.appendChild(container);
+
+                const opt = {
+                    margin: [10, 10, 10, 10],
+                    filename: 'Muhammad_Abdullah_Resume.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { 
+                        scale: 2, 
+                        useCORS: true, 
+                        letterRendering: true,
+                        backgroundColor: '#ffffff'
+                    },
+                    jsPDF: { 
+                        unit: 'mm', 
+                        format: 'a4', 
+                        orientation: 'portrait' 
+                    },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+
+                await html2pdf().set(opt).from(clone).save();
+
+                document.body.removeChild(container);
+                showToast('Resume PDF downloaded successfully!');
+
+            } catch (err) {
+                console.error('PDF generation error:', err);
+                showToast('Opening print dialog to save as PDF...');
+                window.print();
+            } finally {
+                if (btn) btn.disabled = false;
+                if (label) label.textContent = 'Download PDF';
+            }
+        }
+    </script>
 </body>
 </html>
