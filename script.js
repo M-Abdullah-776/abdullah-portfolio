@@ -262,12 +262,19 @@ document.addEventListener('DOMContentLoaded', () => {
             btnText.textContent = "Sending...";
             submitBtn.disabled = true;
 
+            const senderName  = document.getElementById("name").value.trim();
+            const senderEmail = document.getElementById("email").value.trim();
+            const senderMsg   = document.getElementById("message").value.trim();
+
             const formData = {
                 access_key: "26262f26-09db-4ef0-a1a3-d7084aad19a0",
-                name: document.getElementById("name").value.trim(),
-                email: document.getElementById("email").value.trim(),
-                message: document.getElementById("message").value.trim(),
-                subject: "New Portfolio Message from " + document.getElementById("name").value.trim(),
+                name:        senderName,
+                email:       senderEmail,
+                message:     senderMsg,
+                subject:     "New Portfolio Message from " + senderName,
+                from_name:   senderName,
+                replyto:     senderEmail,
+                to_email:    "abdullahasadullah776@gmail.com",
             };
 
             try {
