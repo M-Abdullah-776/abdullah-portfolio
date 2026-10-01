@@ -36,7 +36,11 @@
     <!-- Preloader -->
     <div class="preloader" id="preloader">
         <div class="preloader-content">
-            <span class="logo-text">MA</span>
+            <div class="preloader-logo-3d">
+                <span class="preloader-logo-front"><span class="logo-m">M</span><span class="logo-a">A</span></span>
+                <span class="preloader-logo-top"></span>
+                <span class="preloader-logo-right"></span>
+            </div>
             <div class="preloader-bar">
                 <div class="preloader-progress" id="preloader-progress"></div>
             </div>
@@ -47,8 +51,21 @@
     <!-- Navigation Header -->
     <header class="header">
         <div class="nav-container">
-            <a href="#hero" class="logo">
-                <span class="logo-m">M</span><span class="logo-a">A</span>
+            <a href="#hero" class="logo logo-3d" id="nav-logo-3d" aria-label="MA - Muhammad Abdullah">
+                <div class="logo-3d-scene">
+                    <div class="logo-3d-cube">
+                        <!-- Front face -->
+                        <span class="logo-3d-face logo-3d-front">
+                            <span class="logo-m">M</span><span class="logo-a">A</span>
+                        </span>
+                        <!-- Top extrusion layer -->
+                        <span class="logo-3d-face logo-3d-top"></span>
+                        <!-- Right extrusion layer -->
+                        <span class="logo-3d-face logo-3d-right"></span>
+                        <!-- Bottom shadow -->
+                        <span class="logo-3d-shadow"></span>
+                    </div>
+                </div>
             </a>
             <nav class="nav-menu" id="nav-menu">
                 <a href="#hero" class="nav-link active">Home</a>

@@ -332,12 +332,17 @@ input, textarea, button {
     padding: 0 2rem;
 }
 
+/* ==========================================================================
+   3D LOGO
+   ========================================================================== */
 .logo {
     font-family: var(--font-luxury);
     font-size: 1.8rem;
     font-weight: 800;
     letter-spacing: 0.1em;
     display: flex;
+    align-items: center;
+    text-decoration: none;
 }
 
 .logo-m {
@@ -346,6 +351,185 @@ input, textarea, button {
 
 .logo-a {
     color: var(--color-gold);
+}
+
+/* --- 3D Scene Container --- */
+.logo-3d {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.logo-3d-scene {
+    perspective: 400px;
+    perspective-origin: 50% 50%;
+    display: inline-block;
+}
+
+.logo-3d-cube {
+    position: relative;
+    display: inline-block;
+    transform-style: preserve-3d;
+    transform: rotateX(-12deg) rotateY(-10deg);
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    animation: logo-3d-float 4s ease-in-out infinite;
+}
+
+.logo-3d:hover .logo-3d-cube {
+    transform: rotateX(-8deg) rotateY(-20deg) scale(1.08);
+    animation-play-state: paused;
+}
+
+/* --- Front Face (main text) --- */
+.logo-3d-face {
+    display: block;
+    font-family: var(--font-luxury);
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    padding: 0.05em 0.1em;
+    white-space: nowrap;
+}
+
+.logo-3d-front {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg,
+        #ffffff 0%,
+        #f3d79f 40%,
+        #dfba73 70%,
+        #c5a059 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(223, 186, 115, 0.5));
+}
+
+/* --- Top extrusion face --- */
+.logo-3d-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    display: block;
+    background: linear-gradient(to bottom,
+        rgba(243, 215, 159, 0.9) 0%,
+        rgba(197, 160, 89, 0.7) 100%);
+    -webkit-text-fill-color: transparent;
+    transform: rotateX(90deg) translateZ(-0.35em);
+    transform-origin: top center;
+    height: 0.4em;
+    top: -0.38em;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    opacity: 0.65;
+}
+
+/* --- Right extrusion face (side depth) --- */
+.logo-3d-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    display: block;
+    width: 0.35em;
+    background: linear-gradient(to right,
+        rgba(165, 128, 58, 0.85) 0%,
+        rgba(100, 80, 30, 0.5) 100%);
+    transform: rotateY(-90deg) translateZ(0);
+    transform-origin: right center;
+    right: -0.33em;
+    opacity: 0.7;
+}
+
+/* --- Cast shadow --- */
+.logo-3d-shadow {
+    position: absolute;
+    bottom: -10px;
+    left: 5%;
+    width: 90%;
+    height: 10px;
+    background: radial-gradient(ellipse at center,
+        rgba(223, 186, 115, 0.35) 0%,
+        transparent 75%);
+    filter: blur(6px);
+    pointer-events: none;
+    transform: translateZ(-5px);
+}
+
+/* --- Floating animation --- */
+@keyframes logo-3d-float {
+    0%, 100% { transform: rotateX(-12deg) rotateY(-10deg) translateY(0); }
+    50%       { transform: rotateX(-12deg) rotateY(-6deg)  translateY(-3px); }
+}
+
+/* ==========================================================================
+   PRELOADER 3D LOGO
+   ========================================================================== */
+.preloader-logo-3d {
+    position: relative;
+    display: inline-block;
+    transform-style: preserve-3d;
+    perspective: 600px;
+    animation: preloader-3d-spin 3s ease-in-out infinite;
+}
+
+.preloader-logo-front {
+    display: block;
+    font-family: var(--font-luxury);
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    background: linear-gradient(135deg,
+        #ffffff 0%,
+        #f3d79f 30%,
+        #dfba73 60%,
+        #c5a059 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(223, 186, 115, 0.6));
+    position: relative;
+    z-index: 2;
+}
+
+.preloader-logo-top {
+    position: absolute;
+    top: -0.4em;
+    left: 0;
+    right: 0;
+    height: 0.45em;
+    background: linear-gradient(to bottom,
+        rgba(243, 215, 159, 0.8),
+        rgba(197, 160, 89, 0.5));
+    transform: rotateX(90deg) translateZ(-0.5em);
+    transform-origin: top center;
+    opacity: 0.6;
+}
+
+.preloader-logo-right {
+    position: absolute;
+    top: 0;
+    right: -0.4em;
+    height: 100%;
+    width: 0.45em;
+    background: linear-gradient(to right,
+        rgba(165, 128, 58, 0.9),
+        rgba(80, 60, 20, 0.4));
+    transform: rotateY(-90deg);
+    transform-origin: right center;
+    opacity: 0.6;
+}
+
+@keyframes preloader-3d-spin {
+    0%   { transform: perspective(600px) rotateX(-5deg)  rotateY(-20deg); }
+    30%  { transform: perspective(600px) rotateX(-10deg) rotateY(5deg);   }
+    60%  { transform: perspective(600px) rotateX(-5deg)  rotateY(20deg);  }
+    100% { transform: perspective(600px) rotateX(-5deg)  rotateY(-20deg); }
 }
 
 .nav-menu {
